@@ -1,29 +1,80 @@
 # E-commerce-products-classification-using-images-and-text
-# Multi-modal deep learning Method:
 
-This problem comes under the category of multi-label classification and product retrieval. Sometimes product's textual data (product title & description) is helpful for this task, and sometimes product's images help. Hence, we need a Deep learning model which takes into account both the products image and text. This is why a multi-modal deep-learning method is required, with its help we can generates such embeddings that comprises of both the product's text and image representation which can help in further downstream tasks for classification and product retrieval.
+This project tackles a **multi-label classification** and **product retrieval** problem using **multi-modal deep learning**. Products often have both **textual descriptions** (like titles) and **images**. Using both allows the model to better understand the product context and improve classification and retrieval accuracy.
 
-# We have taken the reference from HUSE paper :
-A lot of ideas implemented here are taken from this paper. I have mentioned in the notebook where I have taken refernce from this paper. You can go and read that section for better understanding.
-# Paper overview
-﻿HUSE: Hierarchical Universal Semantic Embeddings (https://arxiv.org/pdf/1911.05978.pdf)
-This paper proposes a novel method, HUSE, to learn cross-modal representation with semantic information. HUSE learns a shared latent space where the distance between any two universal embeddings is similar to the distance between their corresponding class embeddings in the semantic embedding space. HUSE also uses a classification objective with a shared classification layer to make sure that the image and text embeddings are in the same shared latent space.
+---
+
+## Objective
+
+To build a unified neural network model that:
+
+- Accepts both **text** and **image** as input.
+- Learns **semantic embeddings** for both modalities.
+- Projects both inputs into a **shared embedding space**.
+- Enables **product classification**, **cross-modal similarity**, and **retrieval**.
+
+---
+
+## Model Architecture Overview
+
+The solution is based on a **dual-tower architecture**:
+
 ![HUSE overview](https://github.com/1sh1vam/E-commerce-products-classification-using-images-and-text/blob/master/HUSE.png)
 
-As you can see the image HUSE model is divided into three parts.
+### Image Tower
 
+- Uses a **pre-trained VGG16** model.
+- Extracts features from product images.
+- Outputs are **L2-normalized**.
 
-### PART1: CREATING TEXT AND IMAGE EMBEDDINGS INPUTS:
-HUSE being a Multimodal Model takes in two input, image and text. The Image is passed onto a pre-trained VGG16 Image Model which produces an embedding for an individual images and trained a small model which are used to obtain a representation of the Text.
-  
-### PART2: MODEL IMPLEMENTATION FOR CREATING FINAL EMBEDDINGS:
-The output from VGG16 is passed onto an Image Tower in parallel to output from text model which is passed onto the Text Tower. The L2 normalized output from both the towers are further passed onto a shared fully connected layer. The output of the shared fully connected layer is further used to calculate different losses.
-﻿
-### PART3: INCORPORATING THREE  LOSSES INTO THE ARCHITECTURE:
-The paper incorporates three losses, for Class Level Similarity, Semantic Similarity, Cross Modal Gap. All three losses are explained in detail in the paper.
+### Text Tower
 
-### Results:
-We have been able to achieve an accuracy of 98.21% on test dataset whereas we got an accuracy of 98.69% on train dataset.
+- Uses **embedding + CNN layers** to process tokenized product titles.
+- Outputs are also **L2-normalized**.
 
-### Note:
-If you are getting any difficulties you can reach to me here at github or on linkedin(https://www.linkedin.com/in/1sh1vam/).
+### Shared Semantic Embedding Space
+
+- Both towers output embeddings into a **universal semantic space**.
+- These embeddings are combined in a **fully connected fusion layer**.
+- Used for classification and similarity computations.
+
+---
+
+## Implementation Steps
+
+### PART 1: Creating Text and Image Embeddings
+
+- **Images** are resized and processed through VGG16 to get feature embeddings.
+- **Text** is tokenized and passed through an embedding and Conv1D model to generate text embeddings.
+
+### PART 2: Final Embedding Construction
+
+- Image and text embeddings are **L2-normalized**.
+- Both are combined into a **shared space** using a dense fusion layer.
+
+### PART 3: Training with Three Losses
+
+- **Class-Level Similarity Loss**
+- **Semantic Similarity Loss**
+- **Cross-Modal Gap Loss**
+
+These ensure embeddings are aligned meaningfully across modalities.
+
+---
+
+## Results
+
+- **Test Accuracy**: 98.21%
+- **Train Accuracy**: 98.69%
+
+This high accuracy indicates the model successfully learns useful joint representations for classification and retrieval.
+
+---
+
+## Key Features
+
+- Joint image-text understanding for robust product classification.
+- Cross-modal product retrieval (e.g., image-to-text or text-to-image).
+- Extendable to downstream tasks like recommendation and semantic search.
+
+---
